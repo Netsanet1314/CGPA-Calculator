@@ -2,6 +2,10 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
  * Click nbfs://nbhost/SystemFileSystem/Templates/GUIForms/JFrame.java to edit this template
  */
+import javax.swing.table.DefaultTableModel;
+import javax.swing.JOptionPane;
+import javax.swing.JOptionPane; 
+import javax.swing.table.DefaultTableModel;
 
 /**
  *
@@ -66,6 +70,7 @@ public class NewJFrame extends javax.swing.JFrame {
         setTitle("CGPA Calculator");
 
         jLabel1.setText("Course Title");
+        jLabel1.setName("jTextField1"); // NOI18N
 
         jTextField2.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -74,8 +79,10 @@ public class NewJFrame extends javax.swing.JFrame {
         });
 
         jLabel3.setText("Code");
+        jLabel3.setName("jTextField2"); // NOI18N
 
         jLabel4.setText("Credit");
+        jLabel4.setName("jTextField3"); // NOI18N
 
         jTextField3.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -84,6 +91,7 @@ public class NewJFrame extends javax.swing.JFrame {
         });
 
         jLabel5.setText("Letter Grade");
+        jLabel5.setName("jComboBox1"); // NOI18N
 
         jComboBox1.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "...Select Letter Grade", "A+", "A", "A-", "B+", "B", "B-", "C+", "C", "C-", "D", "F" }));
         jComboBox1.addActionListener(new java.awt.event.ActionListener() {
@@ -101,18 +109,17 @@ public class NewJFrame extends javax.swing.JFrame {
 
         jTable2.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
-                {null, null, null, null, null, null},
-                {null, null, null, null, null, null},
-                {null, null, null, null, null, null},
-                {null, null, null, null, null, null}
+
             },
             new String [] {
                 "#", "Title", "Code", "Credit", "LG", "GP"
             }
         ));
+        jTable2.setName("jTable1"); // NOI18N
         jScrollPane2.setViewportView(jTable2);
 
         jLabel7.setText("Total Credit");
+        jLabel7.setName("jTextField4"); // NOI18N
 
         jTextField4.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -121,8 +128,10 @@ public class NewJFrame extends javax.swing.JFrame {
         });
 
         jLabel8.setText("Total Grade Point");
+        jLabel8.setName("jTextField5"); // NOI18N
 
         jLabel9.setText("CGPA");
+        jLabel9.setName("jTextField6"); // NOI18N
 
         jTextField6.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -275,43 +284,80 @@ public class NewJFrame extends javax.swing.JFrame {
     }//GEN-LAST:event_jButton3ActionPerformed
 
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
-         // TODO add your handling code here:
+
+                                           
+    DefaultTableModel model = (DefaultTableModel) jTable2.getModel();
+    String title = jTextField1.getText();
+    String code = jTextField2.getText();
+    String creditStr = jTextField3.getText();
+    String letterGrade = jComboBox1.getSelectedItem().toString();
+
+    if (title.isEmpty() || code.isEmpty() || creditStr.isEmpty() || letterGrade.equals("...Select Letter Grade")) {
+        JOptionPane.showMessageDialog(this, "Please fill all fields properly.");
+        return;
+    }
+
+    double credit;
+    try {
+        credit = Double.parseDouble(creditStr);
+    } catch (NumberFormatException e) {
+        JOptionPane.showMessageDialog(this, "Credit must be a number.");
+        return;
+    }
+
+    double gradePoint = switch (letterGrade) {
+        case "A+" -> 4.0;
+        case "A"  -> 4.0;
+        case "A-" -> 3.7;
+        case "B+" -> 3.3;
+        case "B"  -> 3.0;
+        case "B-" -> 2.7;
+        case "C+" -> 2.3;
+        case "C"  -> 2.0;
+        case "C-" -> 1.7;
+        case "D"  -> 1.0;
+        case "F"  -> 0.0;
+        default -> {
+            JOptionPane.showMessageDialog(this, "Invalid grade selected.");
+            yield -1;
+        }
+    };
+
+    if (gradePoint < 0) return;
+
+    double gradeCredit = gradePoint * credit;
+
+    model.addRow(new Object[] {
+        model.getRowCount() + 1,
+        title,
+        code,
+        credit,
+        letterGrade,
+        String.format("%.2f", gradeCredit)
+    });
+
+    // Clear input fields
+    jTextField1.setText("");
+    jTextField2.setText("");
+    jTextField3.setText("");
+    jComboBox1.setSelectedIndex(0);
+
+
     }//GEN-LAST:event_jButton1ActionPerformed
 
     /**
      * @param args the command line arguments
      */
-    public static void main(String args[]) {
-        /* Set the Nimbus look and feel */
-        //<editor-fold defaultstate="collapsed" desc=" Look and feel setting code (optional) ">
-        /* If Nimbus (introduced in Java SE 6) is not available, stay with the default look and feel.
-         * For details see http://download.oracle.com/javase/tutorial/uiswing/lookandfeel/plaf.html 
-         */
-        try {
-            for (javax.swing.UIManager.LookAndFeelInfo info : javax.swing.UIManager.getInstalledLookAndFeels()) {
-                if ("Nimbus".equals(info.getName())) {
-                    javax.swing.UIManager.setLookAndFeel(info.getClassName());
-                    break;
-                }
-            }
-        } catch (ClassNotFoundException ex) {
-            java.util.logging.Logger.getLogger(NewJFrame.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (InstantiationException ex) {
-            java.util.logging.Logger.getLogger(NewJFrame.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (IllegalAccessException ex) {
-            java.util.logging.Logger.getLogger(NewJFrame.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (javax.swing.UnsupportedLookAndFeelException ex) {
-            java.util.logging.Logger.getLogger(NewJFrame.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        }
-        //</editor-fold>
+    public static void main(String args[])
 
-        /* Create and display the form */
-        java.awt.EventQueue.invokeLater(new Runnable() {
-            public void run() {
-                new NewJFrame().setVisible(true);
-            }
-        });
-    }
+
+  {
+      java.awt.EventQueue.invokeLater(new Runnable() {
+        public void run() {
+            new NewJFrame().setVisible(true);
+        }
+    });
+  }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton jButton1;
